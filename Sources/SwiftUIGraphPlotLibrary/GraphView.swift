@@ -19,6 +19,8 @@ public struct GraphView: View {
     let dataSet:[PlotData]
     let plotTypes:[GraphPlot]
     
+    let showLegend:Bool = true
+    
     public var frameView:FrameView
     public var xTicksView:BottomAxisView
     public var yTicksView:LeadingAxisView
@@ -53,23 +55,29 @@ public struct GraphView: View {
     }
     
     public var body: some View {
-        VStack(alignment: .trailing, spacing: 5.0) {
-            HStack {
-                //asix label
-                self.isYticks ? self.yTicksView:nil
-                GeometryReader {proxy in
-                //graph
-                    ZStack{
-                        self.frameView
-                        PlotView(dataSet: self.dataSet, plotTypes: self.plotTypes, geometryproxy: proxy)
-                        }
-                }.frame(width: self.graphWidth, height: self.graphHeight, alignment: .center)
+        ZStack {
+            VStack(alignment: .trailing, spacing: 5.0) {
+                HStack {
+                    //asix label
+                    self.isYticks ? self.yTicksView:nil
+                    GeometryReader {proxy in
+                    //graph
+                        ZStack{
+                            self.frameView
+                            PlotView(dataSet: self.dataSet, plotTypes: self.plotTypes, geometryproxy: proxy)
+                            }
+                    }.frame(width: self.graphWidth, height: self.graphHeight, alignment: .center)
+                    
+                }
+                
+                //bottom
+                self.isXticks ? xTicksView.frame(width: self.graphWidth):nil
                 
             }
-            
-            //bottom
-            self.isXticks ? xTicksView.frame(width: self.graphWidth):nil
-            
+            showLegend ?
+                LegendSingleView(name: "LegendName", color: .blue, legendLineLength: 20, legendWidth: 150, legendHeight: 30, legendLineWidth: 3)
+                
+                :nil
         }
     }
 }
